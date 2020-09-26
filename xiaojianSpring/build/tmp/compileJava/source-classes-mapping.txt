@@ -1,0 +1,4 @@
+com/xiaojian/spring/MyTestBean.java
+ com.xiaojian.spring.MyTestBean
+com/xiaojian/spring/test/AppTest.java
+ com.xiaojian.spring.test.AppTest
