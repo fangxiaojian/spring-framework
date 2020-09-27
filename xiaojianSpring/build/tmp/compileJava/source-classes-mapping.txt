@@ -1,4 +1,14 @@
-com/xiaojian/spring/MyTestBean.java
- com.xiaojian.spring.MyTestBean
+com/xiaojian/spring/app/Appconfig.java
+ com.xiaojian.spring.app.Appconfig
 com/xiaojian/spring/test/AppTest.java
  com.xiaojian.spring.test.AppTest
+com/xiaojian/spring/MyTestBean.java
+ com.xiaojian.spring.MyTestBean
+com/xiaojian/spring/beanPostProcessor/TestBeanPostProcessor1.java
+ com.xiaojian.spring.beanPostProcessor.TestBeanPostProcessor1
+com/xiaojian/spring/test/Test.java
+ com.xiaojian.spring.test.Test
+com/xiaojian/spring/dao/IndexDao.java
+ com.xiaojian.spring.dao.IndexDao
+com/xiaojian/spring/beanPostProcessor/TestBeanPostProcessor.java
+ com.xiaojian.spring.beanPostProcessor.TestBeanPostProcessor

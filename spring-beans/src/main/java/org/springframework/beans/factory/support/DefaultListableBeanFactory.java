@@ -1031,6 +1031,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				}
 			}
 			else {
+				// TODO 这个重要
+				/*
+				DefaultListableBeanFactory 工厂
+				    Map  存放  beanName  和  BeanDefinition
+				    List 存放  beanName
+				 */
 				// Still in startup registration phase
 				this.beanDefinitionMap.put(beanName, beanDefinition);
 				this.beanDefinitionNames.add(beanName);

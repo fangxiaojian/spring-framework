@@ -231,10 +231,25 @@ public abstract class AnnotationConfigUtils {
 	}
 
 	public static void processCommonDefinitionAnnotations(AnnotatedBeanDefinition abd) {
+		/*
+		 AnnotatedBeanDefinition 实现 BeanDefinition 接口，
+		 BeanDefinition 是 spring 用来描述 bean 的，
+		 AnnotatedBeanDefinition 是来描述添加了注解的类的 bean，
+		 AnnotatedBeanDefinition.getMetadata() 可以得到类的元数据
+		 元数据里面存放了 类定义的注解
+		     如： @Scope @DependsOn @Qualifier
+		 */
 		processCommonDefinitionAnnotations(abd, abd.getMetadata());
 	}
 
+	/**
+	 * 检查常用的注解
+	 * @param abd
+	 * @param metadata
+	 */
 	static void processCommonDefinitionAnnotations(AnnotatedBeanDefinition abd, AnnotatedTypeMetadata metadata) {
+
+		// 判断类是否加了 lazy 注解
 		AnnotationAttributes lazy = attributesFor(metadata, Lazy.class);
 		if (lazy != null) {
 			abd.setLazyInit(lazy.getBoolean("value"));

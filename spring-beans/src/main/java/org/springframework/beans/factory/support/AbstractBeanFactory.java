@@ -205,6 +205,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 	@Override
 	public Object getBean(String name) throws BeansException {
+		/*
+		getBean 是一个空壳方法，所有的逻辑都封装在 doGetBean 方法中
+		 */
 		return doGetBean(name, null, null, false);
 	}
 
@@ -249,6 +252,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			String name, @Nullable Class<T> requiredType, @Nullable Object[] args, boolean typeCheckOnly)
 			throws BeansException {
 
+		/*
+		 * 通过 name 获取 beanName。这里不使用 name 直接作为 beanName 有两个原因
+		 * 1. name可能会以 & 字符开头，表明调用者想获取 FactoryBean 本身，而非 FactoryBean 实现类所创建的 bean。
+		      在 BeanFactory 中，FactoryBean 的实现类和其他的 bean 存储方式是一致的，即 <beanName, bean>，
+		      beanName 中是没有 & 这个字符的，所以我们需要将 name 的首字符 & 移除，这样才能从缓存里取到 FactoryBean 实例。
+		 * 2. 还有别名的问题，转换需要
+		 */
 		String beanName = transformedBeanName(name);
 		Object bean;
 

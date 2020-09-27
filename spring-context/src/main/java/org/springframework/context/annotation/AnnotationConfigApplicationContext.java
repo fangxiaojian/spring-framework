@@ -55,19 +55,42 @@ import org.springframework.util.Assert;
  */
 public class AnnotationConfigApplicationContext extends GenericApplicationContext implements AnnotationConfigRegistry {
 
+	/**
+	 * 这个类顾名思义是一个 reader，一个读取器
+	 * 读取什么呢？还是顾名思义 AnnotationBeanDefinition 意思是读取一个被加了注解的 Bean
+	 * 这个类在构造方法中实例化的
+	 */
 	private final AnnotatedBeanDefinitionReader reader;
 
+	/**
+	 * 这是一个扫描器，扫描所有加了注解的 bean
+	 * 同样在构造方法中被实例化的
+	 */
 	private final ClassPathBeanDefinitionScanner scanner;
 
 
 	/**
+	 * 初始化一个 bean 的读取和扫描器
+	 * 何谓读取器和扫描器 参考上面的属性注释
+	 * 默认构造函数，如果直接调用这个默认构造方法，需要在稍后通过调用其 register()
+	 * 去注册配置类（JavaConfig），并调用 refresh() 方法刷新容器，
+	 * 触发容器对注解 Bean 的载入，解析和注册过程
 	 * Create a new AnnotationConfigApplicationContext that needs to be populated
 	 * through {@link #register} calls and then manually {@linkplain #refresh refreshed}.
 	 */
 	public AnnotationConfigApplicationContext() {
+		/*
+		父类的构造方法
+		创建一个读取注解的 Bean 定义读取器
+		什么是 bean 定义？BeanDefinition
+		 */
 		StartupStep createAnnotatedBeanDefReader = this.getApplicationStartup().start("spring.context.annotated-bean-reader.create");
 		this.reader = new AnnotatedBeanDefinitionReader(this);
 		createAnnotatedBeanDefReader.end();
+
+		/*
+		创建一个扫描器
+		 */
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
 	}
 
@@ -88,12 +111,19 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * {@link Configuration @Configuration} classes
 	 */
 	public AnnotationConfigApplicationContext(Class<?>... componentClasses) {
+		/*
+		componentClasses == AppConfig.class
+		这里由于他有父类，故而会调用父类的构造方法，然后才会调用自己的构造方法
+		在自己构造方法中初始化一个读取器和扫描器
+		 */
 		this();
 		register(componentClasses);
 		refresh();
 	}
 
 	/**
+	 * 这个构造方法需要注入一个被 javaConfig 注解了的配置类
+	 * 然后会把这个被注解了 JavaConfig 的类通过注解读取器读取后继而解析
 	 * Create a new AnnotationConfigApplicationContext, scanning for components
 	 * in the given packages, registering bean definitions for those components,
 	 * and automatically refreshing the context.
@@ -152,6 +182,14 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	//---------------------------------------------------------------------
 
 	/**
+	 * 注册单个 bean 给容器
+	 * 比如有新加的类可以用这个方法
+	 * 但是注册之后需要手动调用 refresh() 方法去触发容器解析注解
+	 *
+	 * 有两个意思
+	 * 1. 可以注册一个配置类
+	 * 2. 可以单独注册一个 bean
+	 *
 	 * Register one or more component classes to be processed.
 	 * <p>Note that {@link #refresh()} must be called in order for the context
 	 * to fully process the new classes.

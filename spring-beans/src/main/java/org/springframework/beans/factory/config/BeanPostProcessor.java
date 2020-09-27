@@ -20,6 +20,41 @@ import org.springframework.beans.BeansException;
 import org.springframework.lang.Nullable;
 
 /**
+ * bean 的后置器
+ * spring 的扩展点之一
+ * BeanPostProcessor 是 Spring 框架的提供的一个扩展类点 (不止一个)
+ * 通过 BeaPostProcessor 接口，程序员就可插手 bean 实例化的过程从而减轻了 beanFactory 的负担
+ * 值得说明的是这个接口可以设置多个，会形成一个列表，然后依次执行
+ * （但是 spring 默认的怎么办？ set）
+ * 比如 AOP 就是在 bean 实例后期间将切面逻辑织入 bean 实例中的
+ * AOP 也正是通过 BeanPostProcessor 和 IOC 容器建立起了联系
+ * (由 spring 提供的默认的 PosProcessor，spring 提供了很多默认的 PostProcessor,下面我会一介绍这些实现类的功能)
+ * 可以来演示下 BeanPostProcessor 的使用方式(把动态代理和 IOC、AOP 结合起来使用)
+ * 在演示之前先来熟悉一下这个接口，其实这个接口本身特别简单，简单到你发指
+ * 但是他的实现类特别复杂，同样复杂到发指!
+ * 可以看看 spring 提供哪些默认的实现(前方高能)
+ * 查看类的关系图可以知道spring提供了以下的默认实现， 因为高能，放而我们只是解释几个常用的
+ * 1、 ApplicationContextAwareProcessor (acap)
+ *    acap 后置处理器的作用是，当应用程序定义 Bean 实现 ApplicationContextAware 接口时注入 ApplicationContext 对象
+ *    当然这是他的单一个作业。他还有其他作用。这里不列举了，可以参考源码
+ *    我们可以针对 ApplicationContextAwareProcessor 写一个栗子
+ * 2、InitDestroyAnnotationBeanPostProcessor
+ *    用来处理自定义的初始化方法和销毁方法
+ *    上次说过Spring中提供I 3种自定义初始化和销毁方法分别是
+ *        一、通过 @Bean 指定 init-method 和 destroy-method 属性
+ *        二、Bean 实现 InitializingBean 接口和实现 DisposableBean
+ *        三、@PostConstruct; @PreDestroy
+ *    为什么 spring 通过这种方法都能完成对 bean 生命周期的回调呢?
+ *    可以通过 InitDestroyAnnotationBeanPostProcessor 的源码来解释
+ * 3、InstantiationAwareBeanPostProcessor
+ * 4、CommonAnnotationBeanPostProcessor
+ * 5、AutowiredAnnotationBeanPostProcessor
+ * 6、RequiredAnnotationBeanPostProcessor
+ * 7、BeanValidationPostProcessor
+ * 8、AbstractAutoProxyCreator
+ * 后面会 解释
+ *
+ *
  * Factory hook that allows for custom modification of new bean instances &mdash;
  * for example, checking for marker interfaces or wrapping beans with proxies.
  *
@@ -58,6 +93,7 @@ import org.springframework.lang.Nullable;
 public interface BeanPostProcessor {
 
 	/**
+	 * 在 bean 的初始化之前执行
 	 * Apply this {@code BeanPostProcessor} to the given new bean instance <i>before</i> any bean
 	 * initialization callbacks (like InitializingBean's {@code afterPropertiesSet}
 	 * or a custom init-method). The bean will already be populated with property values.
@@ -76,6 +112,7 @@ public interface BeanPostProcessor {
 	}
 
 	/**
+	 * 在 bean 的初始化之后执行
 	 * Apply this {@code BeanPostProcessor} to the given new bean instance <i>after</i> any bean
 	 * initialization callbacks (like InitializingBean's {@code afterPropertiesSet}
 	 * or a custom init-method). The bean will already be populated with property values.

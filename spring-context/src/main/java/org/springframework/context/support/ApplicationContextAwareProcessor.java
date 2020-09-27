@@ -35,6 +35,10 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringValueResolver;
 
 /**
+ * 这个类说起来相当复杂
+ * 要从他的接口 BeanPostProcessor 说起，可以先查看他的接口
+ * 看完接口之后再来看下面的注释
+ *
  * {@link BeanPostProcessor} implementation that supplies the {@code ApplicationContext},
  * {@link org.springframework.core.env.Environment Environment}, or
  * {@link StringValueResolver} for the {@code ApplicationContext} to beans that
@@ -99,6 +103,7 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
 			}, acc);
 		}
 		else {
+			//
 			invokeAwareInterfaces(bean);
 		}
 
@@ -124,6 +129,10 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
 		if (bean instanceof ApplicationStartupAware) {
 			((ApplicationStartupAware) bean).setApplicationStartup(this.applicationContext.getApplicationStartup());
 		}
+		/*
+		spring 帮你 set 一个 applicationContext 对象
+		所以当我们自己的一个对象实现了 ApplicationContextAware 对象只需要提供 setter 就能得到 applicationContext
+		 */
 		if (bean instanceof ApplicationContextAware) {
 			((ApplicationContextAware) bean).setApplicationContext(this.applicationContext);
 		}

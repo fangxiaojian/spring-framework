@@ -23,6 +23,9 @@ import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
 
 /**
+ * Spring 用来描述 Bean 的一个接口
+ * BeanDefinition描述了一个bean实例，该实例具有属性值，构造函数参数值以及具体实现提供的更多信息。
+ *
  * A BeanDefinition describes a bean instance, which has property values,
  * constructor argument values, and further information supplied by
  * concrete implementations.
@@ -41,6 +44,7 @@ import org.springframework.lang.Nullable;
 public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 
 	/**
+	 * 标准单例作用域的作用域标识符："singleton"
 	 * Scope identifier for the standard singleton scope: {@value}.
 	 * <p>Note that extended bean factories might support further scopes.
 	 * @see #setScope
@@ -71,6 +75,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	 * of when looking more closely at a particular
 	 * {@link org.springframework.beans.factory.parsing.ComponentDefinition},
 	 * but not when looking at the overall configuration of an application.
+	 * ROLE_SUPPORT = 1 表示这个 bean 是用户配置的，是从配置文件中过来的
 	 */
 	int ROLE_SUPPORT = 1;
 
@@ -79,6 +84,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	 * entirely background role and has no relevance to the end-user. This hint is
 	 * used when registering beans that are completely part of the internal workings
 	 * of a {@link org.springframework.beans.factory.parsing.ComponentDefinition}.
+	 * ROLE_INFRASTRUCTURE = 2 表示这个 bean 是 spring 的，跟用户没关系
 	 */
 	int ROLE_INFRASTRUCTURE = 2;
 
