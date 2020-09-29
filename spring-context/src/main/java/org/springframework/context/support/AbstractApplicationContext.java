@@ -559,18 +559,25 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
+			// 返回一个 Factory （为什么需要返回一个工厂？）
+			// 因为要对工厂进行初始化
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// TODO 重要
+			// 准备工厂
 			// Prepare the bean factory for use in this context.
 			prepareBeanFactory(beanFactory);
 
 			try {
 				// Allows post-processing of the bean factory in context subclasses.
+				// 这个方法在当前版本的 spring 中是没有任何代码的
+				// 可能 spring 在后期的版本会有扩展
 				postProcessBeanFactory(beanFactory);
 
 				StartupStep beanPostProcess = this.applicationStartup.start("spring.context.beans.post-process");
 				// Invoke factory processors registered as beans in the context.
+				// 在 spring 的环境中去执行已经被注册的 Factory Processors
+				// 设置执行自定义的 ProcessBeanFactory
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.
@@ -705,6 +712,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// TODO 这个重要
 		// Configure the bean factory with context callbacks.
 		// 添加一个后置管理器
+		// ApplicationContextAwareProcessor
+		// 能够在 bean 中获得各种 *Aware（*Aware 都有其作用）
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 
 		beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
@@ -763,6 +772,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+		// 这个地方需要注意 getBeanFactoryPostProcessors() 是获取自定义的后置处理器
+		/*
+		 何为自定义的：程序员自己写的，并且没有交给 spring 管理，就是没有加上 @Component，
+		            但是在 refresh() 前调用 addBeanFactoryPostProcessor() 方法，
+		            手动添加后置处理器
+		 */
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime

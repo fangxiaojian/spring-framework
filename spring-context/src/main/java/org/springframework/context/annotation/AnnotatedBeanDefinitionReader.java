@@ -58,6 +58,15 @@ public class AnnotatedBeanDefinitionReader {
 
 
 	/**
+	 * 这里的 BeanDefinitionRegistry registry 是通过在 AnnotationConfigApplicationContext
+	 * 的构造方法中传进来的 this
+	 * 由此说明 AnnotationConfigApplicationContext 是一个 BeanDefinitionRegistry 类型的类
+	 * 何以证明我们可以看到 AnnotationConfigApplicationContext 的类关系:
+	 * GenericApplicationContext extends AbstractApplicationContext implements BeanDefinitionRegistry
+	 * 看到他实现了 BeanDefinitionRegistry 证明上面的说法，那么 BeanDefinitionRegistry 的作用是什么呢?
+	 * BeanDefinitionRegistry 顾名思义就是 BeanDefinition 的注册器
+	 * 那么何为 BeanDefinition 呢?参考 BeanDefinition 的源码的注释
+	 *
 	 * Create a new {@code AnnotatedBeanDefinitionReader} for the given registry.
 	 * <p>If the registry is {@link EnvironmentCapable}, e.g. is an {@code ApplicationContext},
 	 * the {@link Environment} will be inherited, otherwise a new
