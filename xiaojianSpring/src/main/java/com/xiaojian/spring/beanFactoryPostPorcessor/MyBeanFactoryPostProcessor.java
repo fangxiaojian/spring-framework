@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @author 小贱
  * @create 2020-09-28 22:10
  */
-//@Component
+@Component
 public class MyBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {

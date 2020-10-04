@@ -168,10 +168,14 @@ class ConfigurationClassParser {
 
 
 	public void parse(Set<BeanDefinitionHolder> configCandidates) {
+		// 根据 BeanDefinition 的类型，做不同的处理，一般都会调用 ConfigurationClassParser#parse 进行解析
 		for (BeanDefinitionHolder holder : configCandidates) {
 			BeanDefinition bd = holder.getBeanDefinition();
 			try {
 				if (bd instanceof AnnotatedBeanDefinition) {
+					// 解析注解对象，并且把解析出来的 BeanDefinition 放到 map，但是这里的 BeanDefinition 指的是 普通的
+					// 何谓不普通的呢？比如 @Bean 和各种 beanFactoryPostProcessor 得到的 bean 不在这里
+					// 但是是这里解析，只是不 put 而已
 					parse(((AnnotatedBeanDefinition) bd).getMetadata(), holder.getBeanName());
 				}
 				else if (bd instanceof AbstractBeanDefinition && ((AbstractBeanDefinition) bd).hasBeanClass()) {
@@ -227,6 +231,7 @@ class ConfigurationClassParser {
 			return;
 		}
 
+		// 处理 @Imported 的情况
 		ConfigurationClass existingClass = this.configurationClasses.get(configClass);
 		if (existingClass != null) {
 			if (configClass.isImported()) {
@@ -251,6 +256,7 @@ class ConfigurationClassParser {
 		}
 		while (sourceClass != null);
 
+		// 一个 map，用来存放扫描出来色 bean（注意这里的 bean 不是对象，仅仅是 bean 的信息，因为还没到实例化
 		this.configurationClasses.put(configClass, configClass);
 	}
 
@@ -295,6 +301,7 @@ class ConfigurationClassParser {
 				Set<BeanDefinitionHolder> scannedBeanDefinitions =
 						this.componentScanParser.parse(componentScan, sourceClass.getMetadata().getClassName());
 				// Check the set of scanned definitions for any further config classes and parse recursively if needed
+				// 检查扫描出来的类当中是否还有 Configuration
 				for (BeanDefinitionHolder holder : scannedBeanDefinitions) {
 					BeanDefinition bdCand = holder.getBeanDefinition().getOriginatingBeanDefinition();
 					if (bdCand == null) {
@@ -308,6 +315,7 @@ class ConfigurationClassParser {
 		}
 
 		// Process any @Import annotations
+		// 处理 @Import
 		processImports(configClass, sourceClass, getImports(sourceClass), filter, true);
 
 		// Process any @ImportResource annotations
@@ -595,6 +603,9 @@ class ConfigurationClassParser {
 					else {
 						// Candidate class not an ImportSelector or ImportBeanDefinitionRegistrar ->
 						// process it as an @Configuration class
+						// 既不是 ImportSelector，也不是 ImportBeanDefinitionRegistrar，则按 普通类 进行处理
+						// 加入到 ImportStack 后调用 processConfigurationClass 进行处理
+						// 注意这里的 processConfigurationClass 前面已经解析过这个方法
 						this.importStack.registerImport(
 								currentSourceClass.getMetadata(), candidate.getMetadata().getClassName());
 						processConfigurationClass(candidate.asConfigClass(configClass), exclusionFilter);

@@ -90,14 +90,19 @@ abstract class ConfigurationClassUtils {
 		}
 
 		AnnotationMetadata metadata;
+		// 判断是否加了和注解
 		if (beanDef instanceof AnnotatedBeanDefinition &&
 				className.equals(((AnnotatedBeanDefinition) beanDef).getMetadata().getClassName())) {
 			// Can reuse the pre-parsed metadata from the given BeanDefinition...
+			// 如果 BeanDefinition 是 AnnotationBeanDefinition 的实例，并且 className 和 BeanDefinition 中的元数据的类名相同
+			// 则直接从 BeanDefinition 获得 Metadata
 			metadata = ((AnnotatedBeanDefinition) beanDef).getMetadata();
 		}
 		else if (beanDef instanceof AbstractBeanDefinition && ((AbstractBeanDefinition) beanDef).hasBeanClass()) {
 			// Check already loaded Class if present...
 			// since we possibly can't even load the class file for this Class.
+			// 如果 BeanDefinition 是 AbstractBeanDefinition 的实例，并且 BeanDef 有 beanClass 属性存在
+			// 则实例化 StandardAnnotationMetadata
 			Class<?> beanClass = ((AbstractBeanDefinition) beanDef).getBeanClass();
 			if (BeanFactoryPostProcessor.class.isAssignableFrom(beanClass) ||
 					BeanPostProcessor.class.isAssignableFrom(beanClass) ||
@@ -122,9 +127,18 @@ abstract class ConfigurationClassUtils {
 		}
 
 		Map<String, Object> config = metadata.getAnnotationAttributes(Configuration.class.getName());
+		// 判断当前这个 BeanDefinition 中存在的类是不是加了 @Configuration 注解
 		if (config != null && !Boolean.FALSE.equals(config.get("proxyBeanMethods"))) {
+			// 如果存在 Configuration 注解，则将 BeanDefinition 设置 ConfigurationClass 属性为 FULL
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
 		}
+		/*
+		判断是否加了以下注解，摘录 isConfigurationCandidate 的源码
+		    candidateIndicators.add(Component.class.getName());
+		    candidateIndicators.add(ComponentScan.class.getName());
+		    candidateIndicators.add(Import.class.getName());
+		    candidateIndicators.add(ImportResource.class.getName());
+		 */
 		else if (config != null || isConfigurationCandidate(metadata)) {
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_LITE);
 		}

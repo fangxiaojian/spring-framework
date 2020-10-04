@@ -2,7 +2,9 @@ package com.xiaojian.spring.test;
 
 import com.xiaojian.spring.app.Appconfig;
 import com.xiaojian.spring.beanFactoryPostPorcessor.MyBeanFactoryPostProcessor;
+import com.xiaojian.spring.dao.CardDao;
 import com.xiaojian.spring.dao.IndexDao;
+import com.xiaojian.spring.service.CradService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -25,7 +27,8 @@ public class Test {
 		 */
 		annotationConfigApplicationContext.register(Appconfig.class);
 
-		annotationConfigApplicationContext.addBeanFactoryPostProcessor(new MyBeanFactoryPostProcessor());
+		// 手动添加 bean 生成过程中的后置处理器
+//		annotationConfigApplicationContext.addBeanFactoryPostProcessor(new MyBeanFactoryPostProcessor());
 
 		/*
 		 初始化 spring 的环境
@@ -36,5 +39,14 @@ public class Test {
 		IndexDao indexDao1 = annotationConfigApplicationContext.getBean(IndexDao.class);
 		System.out.println(indexDao.hashCode() + " ----- " + indexDao1.hashCode());
 		indexDao.query();
+
+
+		/*
+		CardDao 是一个接口，通过 ImportBeanDefinitionRegistrar 将其实例化成类存放至 BeanDefinitionRegistry
+		通过 getBean 可以将其拿出
+		 */
+		CardDao cardDao = (CardDao) annotationConfigApplicationContext.getBean("cardDao");
+//		cardDao.list("xiaojian");
+		annotationConfigApplicationContext.getBean(CradService.class).list();
 	}
 }

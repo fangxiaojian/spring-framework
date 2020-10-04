@@ -1,7 +1,10 @@
 package com.xiaojian.spring.app;
 
+import com.xiaojian.spring.anno.XiaoJianScan;
+import com.xiaojian.spring.importBeanDefinitionRegistrar.MyImportBeanDefinitionRegistrar;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /**
  * @author 小贱
@@ -9,5 +12,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ComponentScan("com.xiaojian.spring")
+@XiaoJianScan
 public class Appconfig {
 }

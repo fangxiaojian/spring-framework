@@ -577,7 +577,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				StartupStep beanPostProcess = this.applicationStartup.start("spring.context.beans.post-process");
 				// Invoke factory processors registered as beans in the context.
 				// 在 spring 的环境中去执行已经被注册的 Factory Processors
-				// 设置执行自定义的 ProcessBeanFactory
+				// 设置执行自定义的 ProcessBeanFactory 和 Spring 内部自己定义的
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.
@@ -704,9 +704,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// Tell the internal bean factory to use the context's class loader etc.
 		beanFactory.setBeanClassLoader(getClassLoader());
 		if (!shouldIgnoreSpel) {
-			// bean 表达式解释器
+			// bean 表达式解释器  能够获取 bean 当中的属性在前台页面
 			beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
 		}
+		// 对象与 String 类型的转换  <property red="dao></property>
 		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
 
 		// TODO 这个重要
@@ -716,6 +717,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// 能够在 bean 中获得各种 *Aware（*Aware 都有其作用）
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 
+		// 忽略以下接口
 		beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
 		beanFactory.ignoreDependencyInterface(EmbeddedValueResolverAware.class);
 		beanFactory.ignoreDependencyInterface(ResourceLoaderAware.class);
@@ -726,6 +728,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		// BeanFactory interface not registered as resolvable type in a plain factory.
 		// MessageSource registered (and found for autowiring) as a bean.
+		// 依赖替换，当你类中注册了对应的接口时，beanFactory 替换 BeanFactory.class
 		beanFactory.registerResolvableDependency(BeanFactory.class, beanFactory);
 		beanFactory.registerResolvableDependency(ResourceLoader.class, this);
 		beanFactory.registerResolvableDependency(ApplicationEventPublisher.class, this);
@@ -741,6 +744,13 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));
 		}
 
+		/*
+		意思是如果自定义的 Bean 中没有名为 "systemProperties" 和 "systemEnvironment" 的 Bean，
+		则注册两个 Bean：
+		              key   -> "systemProperties" 和 "systemEnvironment"
+		              value  -> map
+		这两个 Bean 就是一些系统配置和系统环境信息
+		 */
 		// Register default environment beans.
 		if (!beanFactory.containsLocalBean(ENVIRONMENT_BEAN_NAME)) {
 			beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());
@@ -772,11 +782,19 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
-		// 这个地方需要注意 getBeanFactoryPostProcessors() 是获取自定义的后置处理器
+		// 这个地方需要注意 getBeanFactoryPostProcessors() 是获取手动添加的后置处理器
 		/*
-		 何为自定义的：程序员自己写的，并且没有交给 spring 管理，就是没有加上 @Component，
-		            但是在 refresh() 前调用 addBeanFactoryPostProcessor() 方法，
-		            手动添加后置处理器
+		 何为手动添加的：程序员自己写的，并且没有交给 spring 管理，就是没有加上 @Component，
+		              但是在 refresh() 前调用 addBeanFactoryPostProcessor() 方法，
+		              手动添加后置处理器
+		 自己写的可以加 @Component 也可以不加
+		 如果加了 getBeanFactoryPostProcessors() 这个方法就得不到
+		 为什么得不到？
+		     这个 getBeanFactoryPostProcessors() 是直接获取一个 list  ==》this.beanFactoryPostProcessors
+		     这个 list 是在 AnnotationConfigApplicationContext 被定义的
+		     需要手动赋值给这个 list 之后，在这里才能获取到
+		     **手动添加后置处理器**
+		     addBeanFactoryPostProcessor(new MyBeanFactoryPostProcessor());
 		 */
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
