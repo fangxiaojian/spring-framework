@@ -296,6 +296,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 					// 则将他设置默认值，比如：lazy、init destroy
 					postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName);
 				}
+				// 判断这个类是否加了 注解
 				if (candidate instanceof AnnotatedBeanDefinition) {
 					// 检查并且处理常用的注解
 					// 这里的处理主要是指把常用注解的值设置到 AnnotationBeanDefinition 当中
@@ -307,6 +308,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 					definitionHolder =
 							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
 					beanDefinitions.add(definitionHolder);
+					// 加入到 map 当中
 					registerBeanDefinition(definitionHolder, this.registry);
 				}
 			}
