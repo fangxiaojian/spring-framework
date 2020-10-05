@@ -276,7 +276,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		Assert.notEmpty(basePackages, "At least one base package must be specified");
 		Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<>();
 		for (String basePackage : basePackages) {
-			// 扫描 basePackage 路劲下的 java 文件
+			// 扫描 basePackage 路径下的 java 文件
 			// 并把他转成 BeanDefinition 类型
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
 			for (BeanDefinition candidate : candidates) {
@@ -284,6 +284,13 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);
 				candidate.setScope(scopeMetadata.getScopeName());
 				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);
+				/*
+				spring 通过扫描出来的类存放在 ScannedGenericBeanDefinition
+				        ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader);
+				而 ScannedGenericBeanDefinition 实现了 AbstractBeanDefinition 接口
+				        ScannedGenericBeanDefinition extends GenericBeanDefinition implements AnnotatedBeanDefinition
+				所以 candidate 是 AbstractBeanDefinition 的实现类
+				 */
 				if (candidate instanceof AbstractBeanDefinition) {
 					// 如果这个类型是 AbstractBeanDefinition 的子类
 					// 则将他设置默认值，比如：lazy、init destroy
