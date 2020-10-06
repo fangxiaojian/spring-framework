@@ -152,7 +152,13 @@ final class PostProcessorRegistrationDelegate {
 			}
 
 			// Now, invoke the postProcessBeanFactory callback of all processors handled so far.
+			/*
+			执行 BeanFactoryPostProcessor 的回调，前面不是吗？
+			前面执行的 BeanFactoryPostProcessor 的子类 BeanDefinitionRegistryPostProcessor 的回调
+			这是执行的 BeanFactoryPostProcessor
+			 */
 			invokeBeanFactoryPostProcessors(registryProcessors, beanFactory);
+
 			invokeBeanFactoryPostProcessors(regularPostProcessors, beanFactory);
 		}
 
