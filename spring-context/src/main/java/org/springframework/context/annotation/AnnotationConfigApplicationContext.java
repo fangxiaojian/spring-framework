@@ -81,6 +81,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	public AnnotationConfigApplicationContext() {
 		/*
 		父类的构造方法
+		DefaultListableBeanFactory = new DefaultListableBeanFactory();
 		创建一个读取注解的 Bean 定义读取器
 		什么是 bean 定义？BeanDefinition
 		 */
