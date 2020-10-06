@@ -173,7 +173,7 @@ class ConfigurationClassParser {
 			BeanDefinition bd = holder.getBeanDefinition();
 			try {
 				if (bd instanceof AnnotatedBeanDefinition) {
-					// 解析注解对象，并且把解析出来的 BeanDefinition 放到 map，但是这里的 BeanDefinition 指的是 普通的
+					// TODO 解析注解对象，并且把解析出来的 BeanDefinition 放到 map，但是这里的 BeanDefinition 指的是 普通的
 					// 何谓不普通的呢？比如 @Bean 和各种 beanFactoryPostProcessor 得到的 bean 不在这里
 					// 但是是这里解析，只是不 put 而已
 					parse(((AnnotatedBeanDefinition) bd).getMetadata(), holder.getBeanName());
@@ -300,7 +300,8 @@ class ConfigurationClassParser {
 				!this.conditionEvaluator.shouldSkip(sourceClass.getMetadata(), ConfigurationPhase.REGISTER_BEAN)) {
 			for (AnnotationAttributes componentScan : componentScans) {
 				// The config class is annotated with @ComponentScan -> perform the scan immediately
-				// TODO 重要 扫描普通类
+				// TODO 重要 2.扫描得到所有的 @Component 的 BeanDefinition
+				// componentScan = com.xiaojian.spring 这里是扫描出来所有的 @Component
 				Set<BeanDefinitionHolder> scannedBeanDefinitions =
 						this.componentScanParser.parse(componentScan, sourceClass.getMetadata().getClassName());
 				// Check the set of scanned definitions for any further config classes and parse recursively if needed
@@ -318,7 +319,12 @@ class ConfigurationClassParser {
 		}
 
 		// Process any @Import annotations
-		// 处理 @Import
+		// TODO 3.处理所有的 @Import
+		/* @Import 三种情况
+		ImportSelector
+		ImportBeanDefinitionRegistrar
+		普通类
+		 */
 		processImports(configClass, sourceClass, getImports(sourceClass), filter, true);
 
 		// Process any @ImportResource annotations
@@ -578,7 +584,9 @@ class ConfigurationClassParser {
 				for (SourceClass candidate : importCandidates) {
 					if (candidate.isAssignable(ImportSelector.class)) {
 						// Candidate class is an ImportSelector -> delegate to it to determine imports
+						// 得到 实现 ImportSelector 接口的类 class
 						Class<?> candidateClass = candidate.loadClass();
+						// 反射实现这个类对象
 						ImportSelector selector = ParserStrategyUtils.instantiateClass(candidateClass, ImportSelector.class,
 								this.environment, this.resourceLoader, this.registry);
 						Predicate<String> selectorFilter = selector.getExclusionFilter();
@@ -589,6 +597,7 @@ class ConfigurationClassParser {
 							this.deferredImportSelectorHandler.handle(configClass, (DeferredImportSelector) selector);
 						}
 						else {
+							// 得到 实现类方法 selectImports() 的返回值
 							String[] importClassNames = selector.selectImports(currentSourceClass.getMetadata());
 							Collection<SourceClass> importSourceClasses = asSourceClasses(importClassNames, exclusionFilter);
 							processImports(configClass, currentSourceClass, importSourceClasses, exclusionFilter, false);

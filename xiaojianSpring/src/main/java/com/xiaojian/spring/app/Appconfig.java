@@ -2,6 +2,7 @@ package com.xiaojian.spring.app;
 
 import com.xiaojian.spring.anno.XiaoJianScan;
 import com.xiaojian.spring.importBeanDefinitionRegistrar.MyImportBeanDefinitionRegistrar;
+import com.xiaojian.spring.imports.MyImportSelector;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -13,5 +14,6 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @ComponentScan("com.xiaojian.spring")
 @XiaoJianScan
+@Import(MyImportSelector.class)
 public class Appconfig {
 }

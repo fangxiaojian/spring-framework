@@ -1,7 +1,9 @@
-com/xiaojian/spring/app/MyInvocationHandler.java
- com.xiaojian.spring.app.MyInvocationHandler
-com/xiaojian/spring/factoryBean/MyFactoryBean.java
- com.xiaojian.spring.factoryBean.MyFactoryBean
+com/xiaojian/spring/dao/Dao.java
+ com.xiaojian.spring.dao.Dao
+com/xiaojian/spring/MyTestBean.java
+ com.xiaojian.spring.MyTestBean
+com/xiaojian/spring/app/MyInvocationHandler1.java
+ com.xiaojian.spring.app.MyInvocationHandler1
 com/xiaojian/spring/dao/IndexDao.java
  com.xiaojian.spring.dao.IndexDao
 com/xiaojian/spring/beanFactoryPostPorcessor/MyBeanFactoryPostProcessor.java
@@ -10,6 +12,8 @@ com/xiaojian/spring/anno/Select.java
  com.xiaojian.spring.anno.Select
 com/xiaojian/spring/anno/XiaoJianScan.java
  com.xiaojian.spring.anno.XiaoJianScan
+com/xiaojian/spring/test/AppTest.java
+ com.xiaojian.spring.test.AppTest
 com/xiaojian/spring/beanPostProcessor/TestBeanPostProcessor.java
  com.xiaojian.spring.beanPostProcessor.TestBeanPostProcessor
 com/xiaojian/spring/importBeanDefinitionRegistrar/MyImportBeanDefinitionRegistrar.java
@@ -22,9 +26,15 @@ com/xiaojian/spring/service/CradService.java
  com.xiaojian.spring.service.CradService
 com/xiaojian/spring/dao/CardDao.java
  com.xiaojian.spring.dao.CardDao
+com/xiaojian/spring/imports/MyImportSelector.java
+ com.xiaojian.spring.imports.MyImportSelector
+com/xiaojian/spring/app/MyInvocationHandler.java
+ com.xiaojian.spring.app.MyInvocationHandler
+com/xiaojian/spring/dao/IndexDao1.java
+ com.xiaojian.spring.dao.IndexDao1
+com/xiaojian/spring/factoryBean/MyFactoryBean.java
+ com.xiaojian.spring.factoryBean.MyFactoryBean
 com/xiaojian/spring/test/Test.java
  com.xiaojian.spring.test.Test
-com/xiaojian/spring/MyTestBean.java
- com.xiaojian.spring.MyTestBean
-com/xiaojian/spring/test/AppTest.java
- com.xiaojian.spring.test.AppTest
+com/xiaojian/spring/test/Test1.java
+ com.xiaojian.spring.test.Test1
