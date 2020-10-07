@@ -148,6 +148,11 @@ public abstract class AnnotationConfigUtils {
 	public static Set<BeanDefinitionHolder> registerAnnotationConfigProcessors(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
 
+		/*
+		 获取 beanFactory , DefaultListableBeanFactory 在执行 AnnotationConfigApplicationContext()
+		 的父类构造方法 GenericApplicationContext() 时就创建了
+		 若 registry 是 DefaultListableBeanFactory 类型的子类, 则将 registry 强转成 DefaultListableBeanFactory
+		 */
 		DefaultListableBeanFactory beanFactory = unwrapDefaultListableBeanFactory(registry);
 		if (beanFactory != null) {
 			if (!(beanFactory.getDependencyComparator() instanceof AnnotationAwareOrderComparator)) {
@@ -244,7 +249,7 @@ public abstract class AnnotationConfigUtils {
 		 AnnotatedBeanDefinition 是来描述添加了注解的类的 bean，
 		 AnnotatedBeanDefinition.getMetadata() 可以得到类的元数据
 		 元数据里面存放了 类定义的注解
-		     如： @Scope @DependsOn @Qualifier
+		     如： @Lazy @DependsOn @Description @Role
 		 */
 		processCommonDefinitionAnnotations(abd, abd.getMetadata());
 	}

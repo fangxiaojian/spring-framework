@@ -86,6 +86,9 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 		什么是 bean 定义？BeanDefinition
 		 */
 		StartupStep createAnnotatedBeanDefReader = this.getApplicationStartup().start("spring.context.annotated-bean-reader.create");
+		/** 在创建的 DefaultListableBeanFactory 内
+		 *  将 5个 BeanDefinition 存放到 Map<String, BeanDefinition> beanDefinitionMap 中
+		 *  还有 List<String> beanDefinitionNames 存放 5 个 BeanDefinition 的 beanName */
 		this.reader = new AnnotatedBeanDefinitionReader(this);
 		createAnnotatedBeanDefReader.end();
 

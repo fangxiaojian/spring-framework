@@ -559,7 +559,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
-			// 返回一个 Factory （为什么需要返回一个工厂？）
+			// 返回一个 Factory （为什么需要返回一个工厂？） DefaultListableBeanFactory
 			// 因为要对工厂进行初始化
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
@@ -705,6 +705,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.setBeanClassLoader(getClassLoader());
 		if (!shouldIgnoreSpel) {
 			// bean 表达式解释器  能够获取 bean 当中的属性在前台页面
+			// expressionPrefix = "#{"    expressionSuffix = "}"
 			beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
 		}
 		// 对象与 String 类型的转换  <property red="dao></property>

@@ -17,6 +17,7 @@ public class Test {
 		 * 准备 spring 环境
 		 * 1. 准备工厂 ==》 DefaultListableBeanFactory
 		 * 实例化一个 bdReader 和一个 scanner
+		 * 然后将 5 个 BeanDefinition 存放到 DefaultListableBeanFactory 中
 		 */
 		AnnotationConfigApplicationContext annotationConfigApplicationContext =
 				new AnnotationConfigApplicationContext();
@@ -24,6 +25,8 @@ public class Test {
 		/*
 		 * 把一个 class 转成 bd，最后 put 到 map
 		 * map 位置：DefaultListableBeanFactory 的属性 beanDefinitionMap
+		 * 在 new AnnotationConfigApplicationContext(); 中 put 5 个BeanDefinition
+		 * 这里添加进一个 总的 6 个
 		 */
 		annotationConfigApplicationContext.register(Appconfig.class);
 
