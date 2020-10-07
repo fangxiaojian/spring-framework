@@ -10,21 +10,18 @@ import java.lang.reflect.Method;
  * @author 小贱
  * @create 2020-10-01 15:11
  */
-public class MyInvocationHandler implements InvocationHandler {
+public class MyInvocationHandler1 implements InvocationHandler {
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		System.out.println("xiaojian -- MyInvocationHandler");
-		Method method1 = proxy.getClass().getInterfaces()[0].getMethod(method.getName(), String.class);
-		Select select = method1.getDeclaredAnnotation(Select.class);
-		System.out.println(select.value());
+		System.out.println("xiaojian -- MyInvocationHandler1");
 		return method.invoke(target, args);
 	}
 
 	private Object target;
 
-	public MyInvocationHandler(Object target) {
+	public MyInvocationHandler1(Object target) {
 		this.target = target;
 	}
-	public MyInvocationHandler() {
+	public MyInvocationHandler1() {
 	}
 }

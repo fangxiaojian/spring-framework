@@ -23,7 +23,6 @@ public class MyImportBeanDefinitionRegistrar implements ImportBeanDefinitionRegi
 
 		/**  1. 得到 BeanDefinition  */
 		// 扫描所有接口
-
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(CardDao.class);
 		GenericBeanDefinition beanDefinition = (GenericBeanDefinition) builder.getBeanDefinition();
 		beanDefinition.getConstructorArgumentValues().addGenericArgumentValue(beanDefinition.getBeanClassName());
