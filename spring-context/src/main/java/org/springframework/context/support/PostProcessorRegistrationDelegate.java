@@ -116,13 +116,16 @@ final class PostProcessorRegistrationDelegate {
 			// 合并 list，不重要（为什么要合并？ 因为还有自己的）
 			registryProcessors.addAll(currentRegistryProcessors);
 			// TODO 重要， 这里是方法的调用
+			// 执行所有的 BeanDefinitionRegistryPostProcessors
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry, beanFactory.getApplicationStartup());
+			/** 扫描包，并将 @Component @Import 修饰的类添加进 BeanDefinitionMap 中 */
 			// 这个 list 只是一个临时变量，故而需要清除
 			currentRegistryProcessors.clear();
 
 			// Next, invoke the BeanDefinitionRegistryPostProcessors that implement Ordered.
 			postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
+				// 判断是否已注册，若没有注册则将其注册
 				if (!processedBeans.contains(ppName) && beanFactory.isTypeMatch(ppName, Ordered.class)) {
 					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
 					processedBeans.add(ppName);

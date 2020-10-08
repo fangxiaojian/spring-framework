@@ -324,6 +324,24 @@ class ConfigurationClassParser {
 		ImportSelector
 		ImportBeanDefinitionRegistrar
 		普通类
+		这里和内部递归调用时候的情况不同
+		 */
+		/**
+		 * 这里处理的 import 是需要判断我们的类当中时候有 @Import 注解
+		 * 如果有，就把这个 @Import 当中的值拿出来，是一个类
+		 * 比如 @Import(XXXXX.class)， 那么这里便把 XXXXX 传进去进行解析
+		 * 在解析的过程中如果发觉是一个 importSelector 那么就会掉 selector 的方法
+		 * 返回一个字符串(类名)，通过这个字符串得到-一个类
+		 * 继而在递归调用本方法来处理这个类
+		 *
+		 * 判断一组类是不是 imports（3种 import）
+		 *
+		 * 为什么要单独写这么多注释来说明这个方法?
+		 * 因为 selector 返回的那个类，严格意义上来讲不符合 @Import(XXXXX.class)， 因为这个类没有被直接 import
+		 * 如果不符合，就不会调用这个方法 getImports(sourceClass) 就是得到所有的 import 的类
+		 * 但是注意的是递归当中是没有 getImports(sourceClass) 的，意思是直接把 selector 当中返回的类直接当成一个 import 的类去解析
+		 * 总之就是句话，@Import(XXX.class),那么 XXX 这个类会被解析
+		 * 如:果 xxx 是 selector 的那么他当中返回的类虽然没有直接加上 @Import,但是也会直接解析
 		 */
 		processImports(configClass, sourceClass, getImports(sourceClass), filter, true);
 
@@ -615,9 +633,15 @@ class ConfigurationClassParser {
 					else {
 						// Candidate class not an ImportSelector or ImportBeanDefinitionRegistrar ->
 						// process it as an @Configuration class
-						// 既不是 ImportSelector，也不是 ImportBeanDefinitionRegistrar，则按 普通类 进行处理
+						// 既不是 ImportSelector，也不是 ImportBeanDefinitionRegistrar，则按 import普通类 进行处理
+						// ImportSelector 之后也会递归调用这个方法后进入 import普通类 进行处理
 						// 加入到 ImportStack 后调用 processConfigurationClass 进行处理
 						// 注意这里的 processConfigurationClass 前面已经解析过这个方法
+						// processConfigurationClass 里面主要就是把类放到 configurationClasses
+						// Map<ConfigurationClass, ConfigurationClass> configurationClasses 是一个集合
+						// 会在后面拿出来解析成 BeanDefinition 继而注册
+						// 可以看到 Component普通类 在扫描出来的时候就被注册了
+						// 如果是 importSelector, 会先放到 configurationClasses 后面进行出来注册
 						this.importStack.registerImport(
 								currentSourceClass.getMetadata(), candidate.getMetadata().getClassName());
 						processConfigurationClass(candidate.asConfigClass(configClass), exclusionFilter);
