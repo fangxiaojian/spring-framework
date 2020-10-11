@@ -375,6 +375,14 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 						registry, this.sourceExtractor, this.resourceLoader, this.environment,
 						this.importBeanNameGenerator, parser.getImportRegistry());
 			}
+
+			/*
+			这里值得注意的是扫描出来的bean当中可能包含了特殊类
+            比如 ImportBeanDefinitionRegistrar 那么也在这个方法里面处理
+            但是并不是包含在 configClasses 当中
+            configClasses 当中主要包含的是 importSelector
+            因为 ImportBeanDefinitionRegistrar 在扫描出来的时候已经被添加到一个 list 当中去了
+			 */
 			// 把扫描出来的 bean 对应的 BeanDefinitions 添加进 factory 的 map 当中
 			this.reader.loadBeanDefinitions(configClasses);
 			alreadyParsed.addAll(configClasses);
@@ -478,6 +486,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			beanDef.setAttribute(AutoProxyUtils.PRESERVE_TARGET_CLASS_ATTRIBUTE, Boolean.TRUE);
 			// Set enhanced subclass of the user-specified bean class
 			Class<?> configClass = beanDef.getBeanClass();
+			// 完成对全注解类的 cglib 代理
 			Class<?> enhancedClass = enhancer.enhance(configClass, this.beanClassLoader);
 			if (configClass != enhancedClass) {
 				if (logger.isTraceEnabled()) {

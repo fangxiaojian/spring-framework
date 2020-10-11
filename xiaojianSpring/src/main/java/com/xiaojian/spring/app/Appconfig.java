@@ -1,8 +1,11 @@
 package com.xiaojian.spring.app;
 
 import com.xiaojian.spring.anno.XiaoJianScan;
+import com.xiaojian.spring.dao.IndexDao;
+import com.xiaojian.spring.dao.IndexDao1;
 import com.xiaojian.spring.importBeanDefinitionRegistrar.MyImportBeanDefinitionRegistrar;
 import com.xiaojian.spring.imports.MyImportSelector;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -16,4 +19,17 @@ import org.springframework.context.annotation.Import;
 @XiaoJianScan
 @Import(MyImportSelector.class)
 public class Appconfig {
+
+	@Bean
+	public IndexDao indexDao(){
+		return new IndexDao();
+	}
+
+	@Bean
+	public IndexDao1 indexDao1(){
+		indexDao();
+		return new IndexDao1();
+	}
+
+
 }

@@ -162,6 +162,8 @@ final class PostProcessorRegistrationDelegate {
 			 */
 			invokeBeanFactoryPostProcessors(registryProcessors, beanFactory);
 
+			// 执行自定义的
+			// regularPostProcessors 存放程序员自己添加的 BeanFactoryPostProcessor
 			invokeBeanFactoryPostProcessors(regularPostProcessors, beanFactory);
 		}
 
